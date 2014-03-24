@@ -358,11 +358,11 @@ Use --pm=? to see a list of all available sub options. Complete details at L<htt
 =item B<--cdrom> OPTIONS
 
 File or device used as a virtual CD-ROM device.
-It can be path to an ISO image, or to a CDROM device. It can also be a URL
-from which to fetch/access a minimal boot ISO image. The URLs take the same
-format as described for the C<--location> argument. If a cdrom has been
-specified via the C<--disk> option, and neither C<--cdrom> nor any other
-install option is specified, the C<--disk> cdrom is used as the install media.
+It can be path to an ISO image or a URL from which to fetch/access a
+minimal boot ISO image. The URLs take the same format as described for
+the C<--location> argument. If a cdrom has been specified via the
+C<--disk> option, and neither C<--cdrom> nor any other install option
+is specified, the C<--disk> cdrom is used as the install media.
 
 =item B<-l> LOCATION
 
@@ -1704,20 +1704,6 @@ C<~/.cache/virt-manager/virt-install.log> even if this parameter is omitted.
 =back
 
 =head1 EXAMPLES
-
-Install a Fedora 20 KVM guest with virtio accelerated disk/network,
-creating a new 10GiB qcow2 file, installing from media in the hosts
-CDROM drive. This will use Spice graphics by default, and launch autolaunch
-a graphical client.
-
-  # virt-install \
-       --connect qemu:///system \
-       --virt-type kvm \
-       --name demo \
-       --memory 500 \
-       --disk size=10 \
-       --cdrom /dev/cdrom \
-       --os-variant fedora13
 
 Install a Fedora 9 plain QEMU guest, using LVM partition, virtual networking,
 booting from PXE, using VNC server/viewer, with virtio-scsi disk
