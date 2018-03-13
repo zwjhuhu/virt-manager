@@ -497,8 +497,8 @@ class vmmEngine(vmmGObject):
 
     def _create_inspection_thread(self):
         logging.debug("libguestfs inspection support: %s",
-                      self.config.support_inspection)
-        if not self.config.support_inspection:
+                      self.config.inspection_supported())
+        if not self.config.inspection_supported():
             return
 
         from .inspection import vmmInspection

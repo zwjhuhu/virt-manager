@@ -2420,7 +2420,7 @@ class vmmDetails(vmmGObjectUI):
                 self.widget(name).set_value(int(IdMap_proper))
 
     def refresh_inspection_page(self):
-        inspection_supported = self.config.support_inspection
+        inspection_supported = self.config.inspection_supported()
         uiutil.set_grid_row_visible(self.widget("details-overview-error"),
                                        self.vm.inspection.error)
         if self.vm.inspection.error:
@@ -3120,7 +3120,7 @@ class vmmDetails(vmmGObjectUI):
 
         add_hw_list_option(_("Overview"), HW_LIST_TYPE_GENERAL, "computer")
         if not self.is_customize_dialog:
-            if self.config.support_inspection:
+            if self.config.inspection_supported():
                 add_hw_list_option(_("OS information"),
                     HW_LIST_TYPE_INSPECTION, "computer")
             add_hw_list_option(_("Performance"), HW_LIST_TYPE_STATS,

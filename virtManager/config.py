@@ -233,6 +233,9 @@ class vmmConfig(object):
         ret = ["vnc", "spice"]
         return ret
 
+    def inspection_supported(self):
+        return self.support_inspection and self.get_libguestfs_inspect_vms()
+
     def remove_notifier(self, h):
         self.conf.notify_remove(h)
 
@@ -394,6 +397,14 @@ class vmmConfig(object):
         return self.conf.get("/system-tray")
     def set_view_system_tray(self, val):
         self.conf.set("/system-tray", val)
+
+    # Libguestfs VM inspection
+    def on_libguestfs_inspect_vms_changed(self, cb):
+        return self.conf.notify_add("/enable-libguestfs-vm-inspection", cb)
+    def get_libguestfs_inspect_vms(self):
+        return self.conf.get("/enable-libguestfs-vm-inspection")
+    def set_libguestfs_inspect_vms(self, val):
+        self.conf.set("/enable-libguestfs-vm-inspection", val)
 
 
     # Stats history and interval length
