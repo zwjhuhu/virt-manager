@@ -131,6 +131,16 @@ class TestCapabilities(unittest.TestCase):
         self.assertEqual(caps.os.loader.get_enum("type").get_values(),
             ["rom", "pflash"])
 
+    def testDomainCapabilitiesx86(self):
+        xml = open("tests/capabilities-xml/kvm-x86_64-domcaps.xml").read()
+        caps = DomainCapabilities(utils.open_testdriver(), xml)
+
+        custom_mode = caps.cpu.get_mode("custom")
+        self.assertTrue(bool(custom_mode))
+        cpu_model = custom_mode.get_model("Opteron_G4")
+        self.assertTrue(bool(cpu_model))
+        self.assertTrue(cpu_model.usable)
+
 
 if __name__ == "__main__":
     unittest.main()

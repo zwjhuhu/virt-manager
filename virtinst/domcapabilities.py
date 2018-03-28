@@ -76,6 +76,33 @@ class _Features(_CapsBlock):
     gic = XMLChildProperty(_make_capsblock("gic"), is_single=True)
 
 
+class _CPUModel(XMLBuilder):
+    _XML_ROOT_NAME = "model"
+    model = XMLProperty(".")
+    usable = XMLProperty("./@usable", is_yesno=True)
+
+
+class _CPUMode(XMLBuilder):
+    _XML_ROOT_NAME = "mode"
+    name = XMLProperty("./@name")
+    models = XMLChildProperty(_CPUModel)
+
+    def get_model(self, name):
+        for model in self.models:
+            if model.model == name:
+                return model
+
+
+class _CPU(XMLBuilder):
+    _XML_ROOT_NAME = "cpu"
+    modes = XMLChildProperty(_CPUMode)
+
+    def get_mode(self, name):
+        for mode in self.modes:
+            if mode.name == name:
+                return mode
+
+
 class DomainCapabilities(XMLBuilder):
     @staticmethod
     def build_from_params(conn, emulator, arch, machine, hvtype):
@@ -163,6 +190,7 @@ class DomainCapabilities(XMLBuilder):
 
     _XML_ROOT_NAME = "domainCapabilities"
     os = XMLChildProperty(_OS, is_single=True)
+    cpu = XMLChildProperty(_CPU, is_single=True)
     devices = XMLChildProperty(_Devices, is_single=True)
 
     arch = XMLProperty("./arch")
