@@ -72,8 +72,6 @@ class DomainNumatune(XMLBuilder):
                                        "than pCPUs."))
 
 
-    MEMORY_MODES = ["interleave", "strict", "preferred"]
-
     _XML_ROOT_NAME = "numatune"
     _XML_PROP_ORDER = ["memory_mode", "memory_nodeset"]
 
