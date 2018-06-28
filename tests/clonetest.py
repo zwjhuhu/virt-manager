@@ -191,3 +191,6 @@ class TestClone(unittest.TestCase):
     def testCloneGraphicsPassword(self):
         base = "graphics-password"
         self._clone_helper(base)
+
+    def testCloneChannelSource(self):
+        self._clone_helper("channel-source")

@@ -441,7 +441,9 @@ class Cloner(object):
         # For guest agent channel, remove a path to generate a new one with
         # new guest name
         for channel in self._guest.get_devices("channel"):
-            if channel.type == VirtualChannelDevice.TYPE_UNIX:
+            if (channel.type == VirtualChannelDevice.TYPE_UNIX and
+                channel.target_name and channel.source_path and
+                channel.target_name in channel.source_path):
                 channel.source_path = None
 
         if self._guest.os.nvram:
