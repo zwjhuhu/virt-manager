@@ -128,7 +128,7 @@ class Guest(XMLBuilder):
         self.skip_default_usbredir = False
         self.skip_default_graphics = False
         self.skip_default_rng = False
-        self.x86_cpu_default = self.cpu.SPECIAL_MODE_HOST_MODEL_ONLY
+        self.x86_cpu_default = self.cpu.SPECIAL_MODE_APP_DEFAULT
 
         self.__os_object = None
         self._random_uuid = None
