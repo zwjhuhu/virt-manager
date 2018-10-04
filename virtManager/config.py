@@ -198,7 +198,6 @@ class vmmConfig(object):
                 self.hv_packages = ["qemu-kvm"]
 
         self.default_storage_format_from_config = "qcow2"
-        self.cpu_default_from_config = CPU.SPECIAL_MODE_HOST_MODEL_ONLY
         self.default_console_resizeguest = 0
         self.default_add_spice_usbredir = "yes"
 
@@ -531,24 +530,11 @@ class vmmConfig(object):
     def set_storage_format(self, typ):
         self.conf.set("/new-vm/storage-format", typ.lower())
 
-    def get_default_cpu_setting(self, raw=False, for_cpu=False):
+    def get_default_cpu_setting(self):
         ret = self.conf.get("/new-vm/cpu-default")
-        whitelist = [CPU.SPECIAL_MODE_HOST_MODEL_ONLY,
-                     CPU.SPECIAL_MODE_HOST_MODEL,
-                     CPU.SPECIAL_MODE_HV_DEFAULT]
 
-        if ret not in whitelist:
-            ret = "default"
-        if ret == "default" and not raw:
-            ret = self.cpu_default_from_config
-            if ret not in whitelist:
-                ret = whitelist[0]
-
-        if for_cpu and ret == CPU.SPECIAL_MODE_HOST_MODEL:
-            # host-model has known issues, so use our 'copy cpu'
-            # behavior until host-model does what we need
-            ret = CPU.SPECIAL_MODE_HOST_COPY
-
+        if ret not in CPU.SPECIAL_MODES:
+            ret = CPU.SPECIAL_MODE_APP_DEFAULT
         return ret
     def set_default_cpu_setting(self, val):
         self.conf.set("/new-vm/cpu-default", val.lower())

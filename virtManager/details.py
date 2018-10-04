@@ -972,7 +972,8 @@ class vmmDetails(vmmGObjectUI):
         cpu_model.set_entry_text_column(0)
         cpu_model.set_row_separator_func(sep_func, None)
         model.set_sort_column_id(1, Gtk.SortType.ASCENDING)
-        model.append([_("Application Default"), "1", "appdefault", False])
+        model.append([_("Application Default"), "1",
+            virtinst.CPU.SPECIAL_MODE_APP_DEFAULT, False])
         model.append([_("Hypervisor Default"), "2",
             virtinst.CPU.SPECIAL_MODE_HV_DEFAULT, False])
         model.append([_("Clear CPU configuration"), "3",
@@ -1572,12 +1573,11 @@ class vmmDetails(vmmGObjectUI):
             if text == row[0]:
                 key = row[2]
                 break
-
         if not key:
             return text
 
-        if key == "appdefault":
-            return self.config.get_default_cpu_setting(for_cpu=True)
+        if key == virtinst.CPU.SPECIAL_MODE_APP_DEFAULT:
+            return self.config.get_default_cpu_setting()
         return key
 
     def inspection_refresh(self, src_ignore):
