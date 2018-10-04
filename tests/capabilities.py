@@ -135,6 +135,11 @@ class TestCapabilities(unittest.TestCase):
         xml = open("tests/capabilities-xml/kvm-x86_64-domcaps.xml").read()
         caps = DomainCapabilities(utils.open_testdriver(), xml)
 
+        self.assertEqual(caps.machine, "pc-i440fx-2.1")
+        self.assertEqual(caps.arch, "x86_64")
+        self.assertEqual(caps.domain, "kvm")
+        self.assertEqual(caps.path, "/bin/qemu-system-x86_64")
+
         custom_mode = caps.cpu.get_mode("custom")
         self.assertTrue(bool(custom_mode))
         cpu_model = custom_mode.get_model("Opteron_G4")

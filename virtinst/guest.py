@@ -140,6 +140,7 @@ class Guest(XMLBuilder):
 
         # This is set via Capabilities.build_virtinst_guest
         self.capsinfo = None
+        self._domcaps = None
 
         self.installer = DistroInstaller(self.conn)
 
@@ -534,6 +535,24 @@ class Guest(XMLBuilder):
                 logging.error("Failed to remove disk '%s': %s", name, e)
 
 
+    def lookup_domcaps(self):
+        # We need to regenerate domcaps cache if any of these values change
+        def _compare(domcaps):
+            if self.os.machine and self.os.machine != domcaps.machine:
+                return False
+            if self.type and self.type != domcaps.domain:
+                return False
+            if self.os.arch and self.os.arch != domcaps.arch:
+                return False
+            if self.emulator and self.emulator != domcaps.path:
+                return False
+            return True
+
+        if not self._domcaps or not _compare(self._domcaps):
+            self._domcaps = DomainCapabilities.build_from_guest(self)
+        return self._domcaps
+
+
     ###########################
     # XML convenience helpers #
     ###########################
@@ -543,7 +562,7 @@ class Guest(XMLBuilder):
         Configure UEFI for the VM, but only if libvirt is advertising
         a known UEFI binary path.
         """
-        domcaps = DomainCapabilities.build_from_guest(self)
+        domcaps = self.lookup_domcaps()
 
         if not domcaps.supports_uefi_xml():
             raise RuntimeError(_("Libvirt version does not support UEFI."))
