@@ -389,7 +389,7 @@ c = vinst.add_category("xml-comparsion", "--connect %(URI-KVM)s --noautoconsole 
 c.add_compare(""" \
 --memory 1024 \
 --vcpus 4 --cpuset=1,3-5 \
---cpu host \
+--cpu host-copy \
 --description \"foobar & baz\" \
 --boot uefi \
 --security type=dynamic \
@@ -806,6 +806,7 @@ c.add_compare("--disk none --location nfs:example.com/fake --nonetworks", "locat
 c.add_compare("--disk %(EXISTIMG1)s --pxe --os-variant rhel6.4", "kvm-rhel6")  # RHEL6 defaults
 c.add_compare("--disk %(EXISTIMG1)s --pxe --os-variant rhel7.0", "kvm-rhel7")  # RHEL7 defaults
 c.add_compare("--connect " + utils.uri_kvm_nodomcaps + " --disk %(EXISTIMG1)s --pxe --os-variant rhel7.0", "kvm-cpu-default-fallback")  # No domcaps, so mode=host-model isn't safe, so we fallback to host-model-only
+c.add_compare("--connect " + utils.uri_kvm_nodomcaps + " --cpu host-copy --disk none --pxe", "kvm-hostcopy-fallback")  # No domcaps so need to use capabilities for CPU host-copy
 c.add_compare("--disk %(EXISTIMG1)s --pxe --os-variant centos7.0", "kvm-centos7")  # Centos 7 defaults
 c.add_compare("--os-variant win7 --cdrom %(EXISTIMG2)s --boot loader_type=pflash,loader=CODE.fd,nvram_template=VARS.fd --disk %(EXISTIMG1)s", "win7-uefi")  # no HYPER-V with UEFI
 c.add_compare("--machine q35 --cdrom %(EXISTIMG2)s --disk %(EXISTIMG1)s", "q35-defaults")  # proper q35 disk defaults

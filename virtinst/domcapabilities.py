@@ -80,18 +80,28 @@ class _CPUModel(XMLBuilder):
     _XML_ROOT_NAME = "model"
     model = XMLProperty(".")
     usable = XMLProperty("./@usable", is_yesno=True)
+    fallback = XMLProperty("./@fallback")
+
+
+class _CPUFeature(XMLBuilder):
+    _XML_ROOT_NAME = "feature"
+    name = XMLProperty("./@name")
+    policy = XMLProperty("./@policy")
 
 
 class _CPUMode(XMLBuilder):
     _XML_ROOT_NAME = "mode"
     name = XMLProperty("./@name")
     supported = XMLProperty("./@supported", is_yesno=True)
-    models = XMLChildProperty(_CPUModel)
+    vendor = XMLProperty("./vendor")
 
+    models = XMLChildProperty(_CPUModel)
     def get_model(self, name):
         for model in self.models:
             if model.model == name:
                 return model
+
+    features = XMLChildProperty(_CPUFeature)
 
 
 class _CPU(XMLBuilder):
