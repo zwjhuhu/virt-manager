@@ -1683,7 +1683,7 @@ class ParserBoot(VirtCLIParser):
         if boot_order:
             inst.bootorder = boot_order
 
-        VirtCLIParser._parse(self, inst)
+        return VirtCLIParser._parse(self, inst)
 
 
 _register_virt_parser(ParserBoot)
