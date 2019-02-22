@@ -1568,7 +1568,7 @@ class vmmAddHardware(vmmGObjectUI):
             self._dev.rendernode = rendernode
 
             if not listen or listen == "none":
-                self._dev.set_listen_none()
+                self._dev.listen = "none"
             elif listen == "address":
                 self._dev.listen = addr
                 self._dev.port = port

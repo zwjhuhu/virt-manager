@@ -2296,16 +2296,6 @@ class ParserGraphics(VirtCLIParser):
             return
         inst.type = val
 
-    def set_listen_cb(self, inst, val, virtarg):
-        if val == "none":
-            inst.set_listen_none()
-        elif val == "socket":
-            inst.remove_all_listens()
-            obj = inst.add_listen()
-            obj.type = "socket"
-        else:
-            inst.listen = val
-
     def listens_find_inst_cb(self, *args, **kwargs):
         cliarg = "listens"  # listens[0-9]*
         objpropname = "listens"  # graphics.listens
@@ -2340,7 +2330,7 @@ _add_device_address_args(ParserGraphics)
 ParserGraphics.add_arg(None, "type", cb=ParserGraphics.set_type_cb)
 ParserGraphics.add_arg("port", "port")
 ParserGraphics.add_arg("tlsPort", "tlsport")
-ParserGraphics.add_arg("listen", "listen", cb=ParserGraphics.set_listen_cb)
+ParserGraphics.add_arg("listen", "listen")
 ParserGraphics.add_arg("type", "listens[0-9]*.type",
                        find_inst_cb=ParserGraphics.listens_find_inst_cb)
 ParserGraphics.add_arg("address", "listens[0-9]*.address",

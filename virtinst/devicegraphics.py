@@ -198,15 +198,16 @@ class VirtualGraphics(VirtualDevice):
 
 
     def _set_listen(self, val):
-        # Update the corresponding <listen> block
-        find_listen = [l for l in self.listens if
-                       (l.type == "address" and l.address == self.listen)]
-        if find_listen:
-            if val is None:
-                self.remove_child(find_listen[0])
-            else:
-                find_listen[0].address = val
-        return val
+        if val == "none":
+            self._set_listen_none()
+        elif val == "socket":
+            self._remove_all_listens()
+            obj = self.add_listen()
+            obj.type = "socket"
+        else:
+            self._remove_all_listens()
+            return val
+        return None
     listen = XMLProperty("./@listen", set_converter=_set_listen)
 
     type = XMLProperty("./@type",
@@ -219,7 +220,7 @@ class VirtualGraphics(VirtualDevice):
     defaultMode = XMLProperty("./@defaultMode")
 
     listens = XMLChildProperty(_GraphicsListen)
-    def remove_all_listens(self):
+    def _remove_all_listens(self):
         for listen in self.listens:
             self.remove_child(listen)
 
@@ -233,8 +234,8 @@ class VirtualGraphics(VirtualDevice):
             return self.listens[0].type
         return None
 
-    def set_listen_none(self):
-        self.remove_all_listens()
+    def _set_listen_none(self):
+        self._remove_all_listens()
         self.listen = None
         self.port = None
         self.tlsPort = None
