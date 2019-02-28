@@ -75,6 +75,10 @@ def can_we_clone(conn, vol, path):
                                   vol.get_parent_pool().get_backend()):
             if conn.is_remote() or not os.access(path, os.R_OK):
                 msg = _("Connection does not support managed storage cloning.")
+
+        pool = vol.get_parent_pool()
+        if not pool.supports_volume_creation(clone=True):
+            msg = _("Cannot clone %s storage pool.") % pool.get_type()
     else:
         is_dev = path.startswith("/dev")
         if conn.is_remote():
@@ -118,12 +122,8 @@ def do_we_default(conn, vol, path, ro, shared, devtype):
 
     if vol:
         pool_type = vol.get_parent_pool().get_type()
-        if pool_type == virtinst.StoragePool.TYPE_SCSI:
-            info = append_str(info, _("SCSI device"))
-        elif pool_type == virtinst.StoragePool.TYPE_DISK:
+        if pool_type == virtinst.StoragePool.TYPE_DISK:
             info = append_str(info, _("Disk device"))
-        elif pool_type == virtinst.StoragePool.TYPE_ISCSI:
-            info = append_str(info, _("iSCSI share"))
 
     if shared:
         info = append_str(info, _("Shareable"))
