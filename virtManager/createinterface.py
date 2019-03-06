@@ -1101,7 +1101,7 @@ class vmmCreateInterface(vmmGObjectUI):
 
     def ip_config_finish(self, ignore1=None, ignore2=None):
         if not self.validate_ip_info():
-            return
+            return 1
         self.update_ip_desc()
         self.ip_config.hide()
         return 1
