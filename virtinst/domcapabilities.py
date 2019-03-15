@@ -20,7 +20,11 @@
 
 import logging
 import re
+import xml.etree.ElementTree as ET
 
+import libvirt
+
+from . import CPU
 from .xmlbuilder import XMLBuilder, XMLChildProperty, XMLProperty
 
 
@@ -209,6 +213,59 @@ class DomainCapabilities(XMLBuilder):
                     m.models[0].fallback == "forbid"):
                 return True
         return False
+
+    def _convert_mode_to_cpu(self, xml):
+        root = ET.fromstring(xml)
+        root.tag = "cpu"
+        root.attrib = {}
+        arch = ET.SubElement(root, "arch")
+        arch.text = self.arch
+        return ET.tostring(root, encoding="UTF-8")
+
+    def _get_expandned_cpu(self, mode):
+        cpuXML = self._convert_mode_to_cpu(mode.get_xml_config())
+        logging.debug("CPU XML for security flag baseline: %s", cpuXML)
+
+        try:
+            expandedXML = self.conn.baselineHypervisorCPU(
+                    self.path, self.arch, self.machine, self.domain, [cpuXML],
+                    libvirt.VIR_CONNECT_BASELINE_CPU_EXPAND_FEATURES)
+        except libvirt.libvirtError:
+            expandedXML = self.conn.baselineCPU([cpuXML],
+                    libvirt.VIR_CONNECT_BASELINE_CPU_EXPAND_FEATURES)
+
+        logging.debug("Expanded CPU XML: %s", expandedXML)
+
+        return CPU(self.conn, expandedXML)
+
+    def get_cpu_security_features(self):
+        sec_features = [
+                'pcid',
+                'spec-ctrl',
+                'ssbd',
+                'pdpe1gb',
+                'ibpb',
+                'virt-ssbd',
+                'amd-ssbd',
+                'amd-no-ssb']
+
+        features = []
+
+        for m in self.cpu.modes:
+            if m.name != "host-model" or not m.supported:
+                continue
+
+            try:
+                cpu = self._get_expandned_cpu(m)
+            except libvirt.libvirtError as e:
+                logging.warning(_("Failed to get expanded CPU XML: %s"), e)
+                break
+
+            for feature in cpu.features:
+                if feature.name in sec_features:
+                    features.append(feature.name)
+
+        return features
 
 
     _XML_ROOT_NAME = "domainCapabilities"
