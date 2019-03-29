@@ -610,6 +610,7 @@ c.add_valid("--security label=foobar.label,a1,z2,b3")  # --security static with 
 c.add_compare("--cpuset auto --vcpus 2", "cpuset-auto")  # --cpuset=auto actually works
 c.add_invalid("--clock foo_tickpolicy=merge")  # Unknown timer
 c.add_invalid("--security foobar")  # Busted --security
+c.add_compare("--connect " + utils.uri_kvm_q35 + " --cpu qemu64,secure=off", "cpu-disable-sec")  # disable security features that are added by default
 
 
 
