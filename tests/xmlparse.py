@@ -326,8 +326,12 @@ class XMLParseTest(unittest.TestCase):
         check = self._make_checker(guest.cpu)
         check("mode", "host-passthrough", "custom")
         check("mode", "custom", "host-model")
+        guest.cpu.check_security_features(guest)
+        check("secure", False)
         guest.cpu.set_model(guest, "qemu64")
         check("model", "qemu64")
+        guest.cpu.check_security_features(guest)
+        check("secure", False)
 
         self._alter_compare(guest.get_xml_config(), outfile)
 
