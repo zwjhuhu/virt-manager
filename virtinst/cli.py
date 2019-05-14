@@ -1857,7 +1857,7 @@ class ParserSYSInfo(VirtCLIParser):
             self.guest.os.smbios_mode = "sysinfo"
             inst.type = val
         else:
-            fail(_("Unknown sysinfo flag '%s'") % val)
+            inst.type = val
 
     def set_uuid_cb(self, inst, val, virtarg):
         # If a uuid is supplied it must match the guest UUID. This would be
@@ -1868,9 +1868,7 @@ class ParserSYSInfo(VirtCLIParser):
         self.guest.uuid = val
 
     def _parse(self, inst):
-        if self.optstr == "host" or self.optstr == "emulate":
-            self.optdict['type'] = self.optstr
-        elif self.optstr:
+        if self.optstr and 'type' not in self.optdict:
             # If any string specified, default to type=smbios otherwise
             # libvirt errors. User args can still override this though
             self.optdict['type'] = 'smbios'
