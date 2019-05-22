@@ -1528,11 +1528,11 @@ class ParserCPU(VirtCLIParser):
 
 
 _register_virt_parser(ParserCPU)
+ParserCPU.add_arg("secure", "secure", is_onoff=True)
 ParserCPU.add_arg(None, "model", cb=ParserCPU.set_model_cb)
 ParserCPU.add_arg("mode", "mode")
 ParserCPU.add_arg("match", "match")
 ParserCPU.add_arg("vendor", "vendor")
-ParserCPU.add_arg("secure", "secure", is_onoff=True)
 
 ParserCPU.add_arg(None, "force", is_list=True, cb=ParserCPU.set_feature_cb)
 ParserCPU.add_arg(None, "require", is_list=True, cb=ParserCPU.set_feature_cb)
