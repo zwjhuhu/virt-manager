@@ -28,6 +28,7 @@ from .nodedev import NodeDevice
 from .osdict import OSDB
 from .storage import StoragePool, StorageVolume
 from .install.unattended import UnattendedData
+from .install.cloudinit import CloudInitData
 
 
 HAS_VIRTVIEWER = shutil.which("virt-viewer")
@@ -1600,6 +1601,30 @@ def parse_install(optstr):
     parser = ParserInstall(optstr or None)
     parser.parse(installdata)
     return installdata
+
+
+########################
+# --cloud-init parsing #
+########################
+
+class ParserCloudInit(VirtCLIParser):
+    cli_arg_name = "cloud-init"
+
+    @classmethod
+    def _init_class(cls, **kwargs):
+        VirtCLIParser._init_class(**kwargs)
+        cls.add_arg("root-password", "root_password")
+
+
+def parse_cloud_init(optstr):
+    ret = CloudInitData()
+    if optstr == 1:
+        # This means bare --cloud-init, so there's nothing to parse
+        return ret
+
+    parser = ParserCloudInit(optstr)
+    parser.parse(ret)
+    return ret
 
 
 ######################
