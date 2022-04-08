@@ -39,6 +39,12 @@ class VirtualHostDevice(VirtualDevice):
             self.slot = nodedev.slot
             self.function = nodedev.function
 
+        elif nodedev.device_type == NodeDevice.CAPABILITY_TYPE_MDEV:
+            self.type = "mdev"
+            parts = nodedev.name.split("_")
+            self.uuid = "-".join(parts[1:])
+            self.model = "vfio-pci"
+
         elif nodedev.device_type == NodeDevice.CAPABILITY_TYPE_USBDEV:
             self.type = "usb"
             self.vendor = nodedev.vendor_id
@@ -106,12 +112,14 @@ class VirtualHostDevice(VirtualDevice):
             label += (" %s:%s:%s.%s" %
                       (dehex(self.domain), dehex(self.bus),
                        dehex(self.slot), dehex(self.function)))
+        elif self.uuid:
+            label += " %s" % (self.uuid)
 
         return label
 
 
     _XML_PROP_ORDER = ["mode", "type", "managed", "vendor", "product",
-                       "domain", "bus", "slot", "function"]
+                       "domain", "bus", "slot", "function", "uuid", "model"]
 
     mode = XMLProperty("./@mode", default_cb=lambda s: "subsystem")
     type = XMLProperty("./@type")
@@ -145,5 +153,8 @@ class VirtualHostDevice(VirtualDevice):
     scsi_target = XMLProperty("./source/address/@target", is_int=True)
     scsi_unit = XMLProperty("./source/address/@unit", is_int=True)
 
+    #type mdev
+    uuid = XMLProperty("./source/address/@uuid")
+    model = XMLProperty("./@model")
 
 VirtualHostDevice.register_type()

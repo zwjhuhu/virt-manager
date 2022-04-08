@@ -55,6 +55,7 @@ class NodeDevice(XMLBuilder):
     CAPABILITY_TYPE_SCSIBUS = "scsi_host"
     CAPABILITY_TYPE_SCSIDEV = "scsi"
     CAPABILITY_TYPE_DRM = "drm"
+    CAPABILITY_TYPE_MDEV = "mdev"
 
     @staticmethod
     def lookupNodedevFromString(conn, idstring):
@@ -203,6 +204,23 @@ class PCIDevice(NodeDevice):
             _compare_int(self.slot, hostdev.slot) and
             _compare_int(self.function, hostdev.function))
 
+class MDEVDevice(NodeDevice):
+
+    driver_name = XMLProperty("./driver/name")
+
+    capability_type = XMLProperty("./capability/capability/@type")
+
+    iommu_group = XMLProperty("./capability/iommuGroup/@number", is_int=True)
+
+    def pretty_name(self):
+
+        return self.name
+
+    def compare_to_hostdev(self, hostdev):
+        if hostdev.type != self.device_type:
+            return False
+
+        return hostdev.name == self.name
 
 class USBDevice(NodeDevice):
     bus = XMLProperty("./capability/bus")
@@ -423,5 +441,7 @@ def _typeToDeviceClass(t):
         return SCSIDevice
     elif t == NodeDevice.CAPABILITY_TYPE_DRM:
         return DRMDevice
+    elif t == NodeDevice.CAPABILITY_TYPE_MDEV:
+        return MDEVDevice
     else:
         return NodeDevice
